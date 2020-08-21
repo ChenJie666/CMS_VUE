@@ -1,0 +1,52 @@
+
+.demo-table-expand {
+    font-size: 0;
+}
+
+.demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+}
+
+.demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 100%;
+}
+
+.el-pagination {
+    text-align: center;
+}
+
+
+/*.el-icon-circle-close {*/
+/*    color: red;*/
+/*}*/
+
+.el-input {
+    width: 50%;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
+
+.el-input-number {
+    width: 30%;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
+
+.el-upload {
+    text-align: center;
+}
+
+.el-form-item {
+    color: cornflowerblue;
+}
+
+.container {
+    padding: 30px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 10px;
+}
