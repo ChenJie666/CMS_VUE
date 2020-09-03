@@ -42,6 +42,7 @@
   </el-card>
 </template>
 <script>
+import { getTypeDetailInfo, postTypeDetailInfo } from "../../api/type/typeList";
 export default {
   data() {
     return {
@@ -59,17 +60,15 @@ export default {
     };
   },
   created() {
-    this.detailInt()
+    this.detailInt();
   },
   methods: {
     detailInt() {
-      let url = "/api/menu/findWebMenuTypeDetail?codeId="+this.$route.query.id;
-      this.$axios.get(url).then((res) => {
-        console.log(res);
-        if (res.data.status === 200) {
-          this.formMenu = res.data.data
+      getTypeDetailInfo({ codeId: this.$route.query.id }).then((response) => {
+        if (response.status === 200) {
+          this.formMenu = response.data;
         } else {
-          console.log("error submit!!");
+          this.$message.error("获取详情失败");
         }
       });
     },
@@ -95,19 +94,18 @@ export default {
       this.$refs.menuForm.validate((valid) => {
         if (valid) {
           var fm = JSON.parse(JSON.stringify(this.formMenu));
-          fm = JSON.stringify(fm);
-          console.log(fm);
-          let config = {
-            headers: { "Content-Type": "application/json;charset=UTF-8" },
-          };
-          let url = "/api/menu/updateMenuType";
-          this.$axios.post(url, fm, config).then((res) => {
-            console.log(res);
-            if (res.status === 200) {
+          postTypeDetailInfo(fm).then((response) => {
+            if (response.status === 200) {
+              this.$message({
+                type: "success",
+                message: "更改成功!",
+              });
               this.$router.push({ path: "/type/typeList" });
             } else {
-              console.log("error submit!!");
-              return false;
+              this.$message({
+                type: "error",
+                message: "更改失败",
+              });
             }
           });
         }

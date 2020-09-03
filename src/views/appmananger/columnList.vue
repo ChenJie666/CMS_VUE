@@ -44,6 +44,7 @@
   </div>
 </template>
 <script>
+import { getColumnList, delColumnListItem,postColumnListItem } from "../../api/appmananger/columnList";
 export default {
   data() {
     return {
@@ -55,14 +56,11 @@ export default {
   },
   methods: {
     deviceInt() {
-      var url = "/api/menu/findWebMenuColumn";
-      this.$axios.get(url).then((res) => {
-        if (res.status === 200) {
-          this.MenuDataList = res.data.data
-          console.log(res)
+      getColumnList().then((response) => {
+        if (response.status === 200) {
+          this.MenuDataList = response.data;
         } else {
-          console.log("error submit!!");
-          return false;
+          this.$message.error("列表请求异常");
         }
       });
     },
@@ -71,32 +69,31 @@ export default {
         path: "/appmananger/columnAdd",
       });
     },
+    handleEdit(id) {
+      this.$router.push({
+        path: "/appmananger/columnDetail",
+        query: {
+          id: id,
+        },
+      });
+    },
     delMenu(id) {
-      console.log(id);
-      var url = "/api/menu/deleteMenuType";
-      this.$axios.delete(url, { params: { codeTitleId: id } }).then((res) => {
-        console.log(res);
-        if (res.status === 200) {
-          this.deviceInt();
+      delColumnListItem({codeTitleId:id}).then((response) => {
+        if (response.status === 200) {
+          this.$message.success("删除成功");
+          this.deviceInt()
         } else {
-          console.log("error submit!!");
-          return false;
+          this.$message.error(response.data);
         }
       });
     },
     switchChange(v) {
-      var url = "/api/menu/updateMenuType";
-      let config = {
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-      };
-      var fm = JSON.stringify(v);
-      this.$axios.post(url, fm, config).then((res) => {
-        console.log(res);
-        if (res.status === 200) {
-        
+      postColumnListItem(v).then((response) => {
+        if (response.status === 200) {
+          this.$message.success("修改成功");
+          this.deviceInt()
         } else {
-          console.log("error submit!!");
-          return false;
+          this.$message.error(response.data);
         }
       });
     },

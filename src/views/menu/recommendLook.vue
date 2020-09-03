@@ -1,6 +1,6 @@
 <template>
   <el-card class="box-card">
-    <el-form ref="menuForm" :model="formMenu" :rules="rules">
+    <el-form ref="menuForm" :model="formMenu">
       <el-form-item label="菜谱名称:" label-width="200px" prop="name">
         {{formMenu.name}}
       </el-form-item>

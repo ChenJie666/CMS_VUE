@@ -330,7 +330,13 @@
                 <div class="hxr-awbbCell">
                   <div>温度：</div>
                   <div>
-                    <el-input placeholder="请输入内容" v-model.number="x.temp" type="number" oninput="if(value.length>5)value=value.slice(0,5)" clearable>
+                    <el-input
+                      placeholder="请输入内容"
+                      v-model.number="x.temp"
+                      type="number"
+                      oninput="if(value.length>5)value=value.slice(0,5)"
+                      clearable
+                    >
                       <template slot="append">℃</template>
                     </el-input>
                   </div>
@@ -338,7 +344,13 @@
                 <div class="hxr-awbbCell">
                   <div>时间：</div>
                   <div>
-                    <el-input placeholder="请输入内容" v-model.number="x.time" type="number" oninput="if(value.length>5)value=value.slice(0,5)" clearable>
+                    <el-input
+                      placeholder="请输入内容"
+                      v-model.number="x.time"
+                      type="number"
+                      oninput="if(value.length>5)value=value.slice(0,5)"
+                      clearable
+                    >
                       <template slot="append">分钟</template>
                     </el-input>
                   </div>
@@ -542,27 +554,58 @@ export default {
   created() {
     this.typeListInt();
     this.deviceInt();
+    this.modeListInt()
+    this.parameterListInt();
     this.nutritionalList = getNutritionalList();
     this.forKitchenElectricList = getForKitchenElectricList();
-    this.parameterList = getParameterList();
     this.parameterValueList1 = getParameterValueList1();
     this.parameterValueList2 = getParameterValueList2();
     this.parameterValueList3 = getParameterValueList3();
-    this.modeList = getModeList();
     this.degList = getDegList();
     this.statusList = getStatusList();
   },
   methods: {
+    parameterListInt() {
+        getParameterList().then((response) => {
+          console.log(response)
+        if (response.status === 200) {
+          for (var i = 0; i < response.data.length; i++) {
+            var ls = {
+              value: response.data[i].specificationsType,
+              label: response.data[i].name,
+            };
+            this.parameterList.push(ls);
+          }
+        } else {
+          this.$message.error("列表请求异常");
+        }
+      });
+    },
+    modeListInt() {
+      getModeList().then((response) => {
+        if (response.status === 200) {
+          for (var i = 0; i < response.data.length; i++) {
+            var ls = {
+              value: response.data[i].mark,
+              label: response.data[i].name,
+            };
+            this.modeList.push(ls);
+          }
+        } else {
+          this.$message.error("列表请求异常");
+        }
+      });
+    },
     typeListInt() {
       getMenuTypeList().then((response) => {
         if (response.status === 200) {
           var ms = new Map();
           for (var i = 0; i < response.data.length; i++) {
             var ls = {
-              value: response.data[i].codeId,
+              value: response.data[i].mark,
               label: response.data[i].menuType,
             };
-            ms.set(response.data[i].codeId, response.data[i].menuType);
+            ms.set(response.data[i].mark, response.data[i].menuType);
             this.menuTypeList.push(ls);
           }
           this.mapMenuTypeList = ms;
@@ -705,7 +748,7 @@ export default {
         this.formMenu.menuParameterS[i].defaultChecked = 0;
       }
       item.defaultChecked = 1;
-      this.defaultParameter = item.parameterEnum;
+      this.formMenu.defaultParameter = item.parameterEnum;
     },
     addMenuForm() {
       this.$refs.menuForm.validate((valid) => {
@@ -739,11 +782,13 @@ export default {
           if (fm.menuParameterS.length > 0) {
             var lscs = 0;
             for (var i = 0; i < fm.menuParameterS.length; i++) {
+              console.log(fm.menuParameterS[i].defaultChecked);
               if (fm.menuParameterS[i].defaultChecked == 1) {
                 lscs = 1;
               }
             }
-            if (lscs == 1) {
+            if (lscs == 0) {
+              fm.menuParameterS[0].defaultChecked = 1;
               fm.defaultParameter = fm.menuParameterS[0].parameterEnum;
             }
           }
@@ -752,8 +797,8 @@ export default {
           } else {
             fm.deviceType = "";
           }
+          fm.nutritionalIngredient = JSON.stringify(fm.nutritionalIngredient);
           if (fm.headImg && fm.middleImg && fm.middleImg) {
-            fm.nutritionalIngredient = JSON.stringify(fm.nutritionalIngredient);
             console.log(JSON.stringify(fm));
             addMenuDetailInfo(fm).then((response) => {
               console.log(response);

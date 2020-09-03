@@ -330,7 +330,13 @@
                 <div class="hxr-awbbCell">
                   <div>温度：</div>
                   <div>
-                    <el-input placeholder="请输入内容" v-model.number="x.temp" type="number" oninput="if(value.length>5)value=value.slice(0,5)" clearable>
+                    <el-input
+                      placeholder="请输入内容"
+                      v-model.number="x.temp"
+                      type="number"
+                      oninput="if(value.length>5)value=value.slice(0,5)"
+                      clearable
+                    >
                       <template slot="append">℃</template>
                     </el-input>
                   </div>
@@ -338,7 +344,13 @@
                 <div class="hxr-awbbCell">
                   <div>时间：</div>
                   <div>
-                    <el-input placeholder="请输入内容" v-model.number="x.time" type="number" oninput="if(value.length>5)value=value.slice(0,5)" clearable>
+                    <el-input
+                      placeholder="请输入内容"
+                      v-model.number="x.time"
+                      type="number"
+                      oninput="if(value.length>5)value=value.slice(0,5)"
+                      clearable
+                    >
                       <template slot="append">分钟</template>
                     </el-input>
                   </div>
@@ -546,27 +558,57 @@ export default {
     this.typeListInt();
     this.deviceInt();
     this.getMenuDetail();
+    this.modeListInt();
+    this.parameterListInt();
     this.nutritionalList = getNutritionalList();
     this.forKitchenElectricList = getForKitchenElectricList();
-    this.parameterList = getParameterList();
     this.parameterValueList1 = getParameterValueList1();
     this.parameterValueList2 = getParameterValueList2();
     this.parameterValueList3 = getParameterValueList3();
-    this.modeList = getModeList();
     this.degList = getDegList();
     this.statusList = getStatusList();
   },
   methods: {
+    parameterListInt() {
+      getParameterList().then((response) => {
+        if (response.status === 200) {
+          for (var i = 0; i < response.data.length; i++) {
+            var ls = {
+              value: response.data[i].specificationsType,
+              label: response.data[i].name,
+            };
+            this.parameterList.push(ls);
+          }
+        } else {
+          this.$message.error("列表请求异常");
+        }
+      });
+    },
+    modeListInt() {
+      getModeList().then((response) => {
+        if (response.status === 200) {
+          for (var i = 0; i < response.data.length; i++) {
+            var ls = {
+              value: response.data[i].mark,
+              label: response.data[i].name,
+            };
+            this.modeList.push(ls);
+          }
+        } else {
+          this.$message.error("列表请求异常");
+        }
+      });
+    },
     typeListInt() {
       getMenuTypeList().then((response) => {
         if (response.status === 200) {
           var ms = new Map();
           for (var i = 0; i < response.data.length; i++) {
             var ls = {
-              value: response.data[i].codeId,
+              value: response.data[i].mark,
               label: response.data[i].menuType,
             };
-            ms.set(response.data[i].codeId, response.data[i].menuType);
+            ms.set(response.data[i].mark, response.data[i].menuType);
             this.menuTypeList.push(ls);
           }
           this.mapMenuTypeList = ms;
@@ -741,19 +783,16 @@ export default {
     defaultClick(item) {
       for (var i = 0; i < this.formMenu.menuParameterS.length; i++) {
         this.formMenu.menuParameterS[i].defaultChecked = 0;
-        
       }
       item.defaultChecked = 1;
-      this.defaultParameter = item.parameterEnum;
+      console.log(item.parameterEnum)
+      this.formMenu.defaultParameter = item.parameterEnum;
     },
     addMenuForm() {
       this.$refs.menuForm.validate((valid) => {
         if (valid) {
           var fm = JSON.parse(JSON.stringify(this.formMenu));
-          if (
-            fm.nutritionalIngredient[0].value &&
-            fm.nutritionalIngredient[0].weight
-          ) {
+          if (fm.nutritionalIngredient.length > 0) {
             for (var i = 0; i < fm.nutritionalIngredient.length; i++) {
               for (var j = 0; j < this.nutritionalList.length; j++) {
                 if (
@@ -771,26 +810,47 @@ export default {
               fm.nutritionalIngredient[i].weight = ls1;
             }
           }
-          if (fm.fl[0].name && fm.fl[0].weight) {
+          if (fm.fl.length > 0) {
             for (var i = 0; i < fm.fl.length; i++) {
               var ls1 = fm.fl[i].weight + "克";
               fm.fl[i].weight = ls1;
             }
           }
+          fm.fl = JSON.stringify(fm.fl);
+          console.log(fm.menuParameterS.length);
+          if (fm.menuParameterS.length > 0) {
+            var lscs = 0;
+            for (var i = 0; i < fm.menuParameterS.length; i++) {
+              console.log(fm.menuParameterS[i].defaultChecked);
+              if (fm.menuParameterS[i].defaultChecked == 1) {
+                lscs = 1;
+              }
+            }
+            if (lscs == 0) {
+              fm.menuParameterS[0].defaultChecked = 1;
+              fm.defaultParameter = fm.menuParameterS[0].parameterEnum;
+            }
+          }
           if (fm.deviceType.length > 0) {
             fm.deviceType = fm.deviceType.join(";");
+          } else {
+            fm.deviceType = "";
           }
           fm.nutritionalIngredient = JSON.stringify(fm.nutritionalIngredient);
-          fm.fl = JSON.stringify(fm.fl);
-          postMenuDetailInfo(fm).then((response) => {
-            console.log(response)
-            if (response.status === 200) {
-              this.$message.success("修改成功");
-              this.$router.push({ path: "/menu/menuList" });
-            } else {
-              this.$message.error("修改请求异常");
-            }
-          });
+          if (fm.headImg && fm.middleImg && fm.middleImg) {
+            console.log(fm)
+            postMenuDetailInfo(fm).then((response) => {
+              console.log(response);
+              if (response.status === 200) {
+                this.$message.success("修改成功");
+                this.$router.push({ path: "/menu/menuList" });
+              } else {
+                this.$message.error("修改请求异常");
+              }
+            });
+          } else {
+            this.$message.error("请确保三张菜谱图片已成功上传");
+          }
         }
       });
     },

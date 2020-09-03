@@ -46,7 +46,7 @@
             </div>
           </div>
         </div>
-        <div class="hxr-upAim">支持png格式图片，大小限制在500k以内</div>
+        <div class="hxr-upAim">支持png格式图片，大小限制在100k以内</div>
       </el-form-item>
       <el-form-item label="菜谱介绍:" label-width="200px" prop="introduce">
         <el-input
@@ -154,7 +154,7 @@ export default {
         if (response.status === 200) {
           for (var i = 0; i < response.data.length; i++) {
             var ls = {
-              value: response.data[i].codeId,
+              value: response.data[i].mark,
               label: response.data[i].menuType,
             };
             this.menuTypeList.push(ls);
@@ -177,8 +177,8 @@ export default {
     },
     checkImg(s, t) {
       var s = s / 1024 / 1024;
-      if (s > 0.5) {
-        this.$message.error("文件大小不能超过 500k!");
+      if (s > 0.1) {
+        this.$message.error("文件大小不能超过 100k!");
         return false;
       } else if (t == "image/jpeg" || t == "image/png") {
         return true;

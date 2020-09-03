@@ -42,6 +42,7 @@
   </el-card>
 </template>
 <script>
+import { addTypeItem } from "../../api/type/typeList";
 export default {
   data() {
     return {
@@ -54,13 +55,13 @@ export default {
       formMenu: {
         menuType: "",
         sort: "",
-        imgUrl:""
+        imgUrl: "",
       },
     };
   },
   created() {},
   methods: {
-        checkImg(s, t) {
+    checkImg(s, t) {
       var s = s / 1024 / 1024;
       if (s > 0.5) {
         this.$message.error("文件大小不能超过 500k!");
@@ -76,25 +77,24 @@ export default {
       return this.checkImg(file.size, file.type);
     },
     handleImgSuccess(res, file, index, type) {
-this.formMenu[index] = res.data;
+      this.formMenu[index] = res.data;
     },
     addMenuForm() {
       this.$refs.menuForm.validate((valid) => {
         if (valid) {
           var fm = JSON.parse(JSON.stringify(this.formMenu));
-          fm = JSON.stringify(fm);
-          console.log(fm);
-          let config = {
-            headers: { "Content-Type": "application/json;charset=UTF-8" },
-          };
-          let url = "/api/menu/addMenuType";
-          this.$axios.post(url, fm, config).then((res) => {
-            console.log(res);
-            if (res.status === 200) {
+          addTypeItem(fm).then((response) => {
+            if (response.status === 200) {
+              this.$message({
+                type: "success",
+                message: "添加成功!",
+              });
               this.$router.push({ path: "/type/typeList" });
             } else {
-              console.log("error submit!!");
-              return false;
+              this.$message({
+                type: "error",
+                message: "添加失败",
+              });
             }
           });
         }
@@ -108,8 +108,8 @@ this.formMenu[index] = res.data;
 .el-form-item {
   margin: 20px 20px;
 }
-.hxr-typeUp{
-    border: 1px dotted #999;
+.hxr-typeUp {
+  border: 1px dotted #999;
   border-radius: 4px;
   width: 100px;
   height: 100px;

@@ -27,6 +27,7 @@ const appIndexRecommend =() => import('../views/appmananger/indexRecommend');
 const bannerList =() => import('../views/appmananger/bannerList');
 const columnList =() => import('../views/appmananger/columnList');
 const columnAdd =() => import('../views/appmananger/columnAdd');
+const columnDetail =() => import('../views/appmananger/columnDetail');
 const columnMenu =() => import('../views/appmananger/columnMenu');
 const versionList =() => import('../views/version/versionList');
 const versionAdd =() => import('../views/version/versionAdd');
@@ -86,6 +87,7 @@ const routes = [
             {path: '/appmananger/bannerList',component: bannerList},
             {path: '/appmananger/columnList',component: columnList},
             {path: '/appmananger/columnAdd',component: columnAdd},
+            {path: '/appmananger/columnDetail',component: columnDetail},
             {path: '/appmananger/columnMenu',component: columnMenu},
             {path: '/version/versionList',component: versionList},
             {path: '/version/versionAdd',component: versionAdd},

@@ -358,10 +358,10 @@ export default {
           var ms = new Map();
           for (var i = 0; i < response.data.length; i++) {
             var ls = {
-              value: response.data[i].codeId,
+              value: response.data[i].mark,
               label: response.data[i].menuType,
             };
-            ms.set(response.data[i].codeId, response.data[i].menuType);
+            ms.set(response.data[i].mark, response.data[i].menuType);
             this.menuTypeList.push(ls);
           }
           this.mapMenuTypeList = ms;
@@ -460,7 +460,7 @@ export default {
                   path: "/menu/qsix",
                 });
               } else {
-                this.$message.error("添加请求异常");
+                this.$message.error(response.data);
               }
             });
           } else if (this.$route.query.from == "recommend") {
@@ -482,7 +482,7 @@ export default {
                   path: "/menu/recommend",
                 });
               } else {
-                this.$message.error("添加请求异常");
+                this.$message.error(response.data);
               }
             });
           } else if (this.$route.query.from == "banner") {
@@ -505,7 +505,7 @@ export default {
                   path: "/appmananger/bannerList",
                 });
               } else {
-                this.$message.error("添加请求异常");
+                this.$message.error(response.data);
               }
             });
           }else if (this.$route.query.from == "column") {
@@ -528,7 +528,7 @@ export default {
                   path: "/appmananger/columnMenu",
                 });
               } else {
-                this.$message.error("添加请求异常");
+                this.$message.error(response.data);
               }
             });
           }

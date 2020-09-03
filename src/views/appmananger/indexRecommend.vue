@@ -167,7 +167,7 @@ export default {
         if (response.status === 200) {
           for (var i = 0; i < response.data.length; i++) {
             var ls = {
-              value: response.data[i].codeId,
+              value: response.data[i].mark,
               label: response.data[i].menuType,
             };
             this.menuTypeList.push(ls);

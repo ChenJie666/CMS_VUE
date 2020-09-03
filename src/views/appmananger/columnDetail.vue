@@ -26,7 +26,7 @@
   </el-card>
 </template>
 <script>
-import { addColumnListItem } from "../../api/appmananger/columnList";
+import { postColumnListItem, getColumnListItem } from "../../api/appmananger/columnList";
 export default {
   data() {
     return {
@@ -42,16 +42,26 @@ export default {
       },
     };
   },
-  created() {},
+  created() {
+    this.detailInt();
+  },
   methods: {
+    detailInt() {
+      getColumnListItem({codeId:this.$route.query.id}).then((response) => {
+        if (response.status === 200) {
+          this.formMenu = response.data
+        } else {
+          this.$message.error(response.data);
+        }
+      });
+    },
     addMenuForm() {
       this.$refs.menuForm.validate((valid) => {
         if (valid) {
           var fm = JSON.parse(JSON.stringify(this.formMenu));
-          addColumnListItem(fm).then((response) => {
-            console.log(response)
+          postColumnListItem(fm).then((response) => {
             if (response.status === 200) {
-              this.$message.success("添加成功");
+              this.$message.success("修改成功");
               this.$router.push({ path: "/appmananger/columnList" });
             } else {
               this.$message.error(response.data);

@@ -44,7 +44,11 @@
         </div>
       </el-form-item>
       <el-form-item label="菜谱介绍:" label-width="200px" prop="description">{{formMenu.description}}</el-form-item>
-      <el-form-item label="菜谱分类:" label-width="200px" prop="menuType">{{formMenu.menuType}}</el-form-item>
+      <el-form-item
+        label="菜谱分类:"
+        label-width="200px"
+        prop="menuType"
+      >{{formMenu.menuType | listFilter(menuTypeList)}}</el-form-item>
       <el-form-item
         label="烹饪方式:"
         label-width="200px"
@@ -58,7 +62,7 @@
           v-for="(item,index) in formMenu.nutritionalIngredient"
           :key="index"
         >
-          <div class="hxr-acLeft">{{item.value}}</div>
+          <div class="hxr-acLeft">{{item.value | listFilter(nutritionalList)}}</div>
           <div
             class="hxr-acCenter"
           >{{item.weight}}{{item.value?nutritionalList[item.value-1].end:'无'}}</div>
@@ -92,7 +96,7 @@
       <el-form-item label="支持设备:" label-width="200px">{{formMenu.deviceType}}</el-form-item>
       <el-form-item label-width="200px">
         <div v-if="formMenu.deviceType.length>0">
-          <div class="hxr-addExpend">{{formMenu.specificationsType}}</div>
+          <div class="hxr-addExpend">{{formMenu.specificationsType | listFilter(parameterList)}}</div>
           <div class="hxr-addWell" v-for="(item,index) in formMenu.menuParameterS" :key="index">
             <div class="hxr-awHead">
               <div class="hxr-awhLeft">规格设置</div>
@@ -100,17 +104,17 @@
                 <div
                   class="hxr-awhcCell"
                   v-if="formMenu.specificationsType==1"
-                >{{item.parameterEnum}}</div>
+                >{{item.parameterEnum | listFilter(parameterValueList1)}}克</div>
                 <div
                   class="hxr-awhcCell"
                   v-if="formMenu.specificationsType==2"
-                >{{item.parameterEnum}}</div>
+                >{{item.parameterEnum | listFilter(parameterValueList2)}}</div>
                 <div
                   class="hxr-awhcCell"
                   v-if="formMenu.specificationsType==3"
-                >{{item.parameterEnum}}</div>
+                >{{item.parameterEnum | listFilter(parameterValueList3)}}</div>
               </div>
-              <div class="hxr-awhRight">{{item.defaultChecked==1?"已设为默认":"设为默认"}}</div>
+              <div class="hxr-awhRight">{{item.defaultChecked==1?"已设为默认":"非默认"}}</div>
             </div>
             <div class="hxr-awBody" v-for="(x,index) in item.arithmeticS" :key="index">
               <div class="hxr-awbTop">
@@ -119,7 +123,7 @@
                 <div class="hxr-awbtRight"></div>
               </div>
               <div class="hxr-awbBottom">
-                <div class="hxr-awbbCell">{{x.mode}}</div>
+                <div class="hxr-awbbCell">{{x.mode | listFilter(modeList)}}</div>
                 <div class="hxr-awbbCell">
                   <div>温度：</div>
                   <div>{{x.temp}}</div>
@@ -152,7 +156,7 @@
                 </div>
                 <div class="hxr-awbbCell">
                   <div>是否暂停：</div>
-                  <div>{{x.hasRemind}}</div>
+                  <div>{{x.hasRemind?"是":"否"}}</div>
                 </div>
                 <div class="hxr-awbbCell">
                   <div>信息提醒：</div>
@@ -163,13 +167,18 @@
           </div>
         </div>
       </el-form-item>
-      <el-form-item label="状态:" label-width="200px" prop="publishStatus">{{formMenu.publishStatus}}</el-form-item>
-      <el-form-item label-width="200px">{{formMenu.isOfficial}}</el-form-item>
+      <el-form-item
+        label="状态:"
+        label-width="200px"
+        prop="publishStatus"
+      >{{formMenu.publishStatus | listFilter(statusList)}}</el-form-item>
+      <el-form-item label-width="200px">{{formMenu.isOfficial | listFilter(isOfficialList)}}</el-form-item>
     </el-form>
   </el-card>
 </template>
 
 <script>
+import { arrToMap } from "../../utils/main";
 import {
   getDeviceList,
   getMenuTypeList,
@@ -179,6 +188,7 @@ import {
   getParameterValueList1,
   getParameterValueList2,
   getParameterValueList3,
+  getIsOfficialList,
   getModeList,
   getDegList,
   getStatusList,
@@ -229,40 +239,79 @@ export default {
       degList: [],
       statusList: [],
       deviceList: [],
+      isOfficialList: [],
       imageUrl1: "",
       imageUrl2: "",
       imageUrl3: "",
       value1: "",
     };
   },
+  filters: {
+    listFilter: function (value, list) {
+      var ls = value;
+      if (list) {
+        var lsmap = arrToMap(list, "value", "label");
+        ls = lsmap.get(value);
+      }
+      return ls;
+    },
+  },
   created() {
     this.typeListInt();
     this.deviceInt();
     this.getMenuDetail();
+    this.modeListInt();
+    this.parameterListInt();
     this.nutritionalList = getNutritionalList();
     this.forKitchenElectricList = getForKitchenElectricList();
-    this.parameterList = getParameterList();
     this.parameterValueList1 = getParameterValueList1();
     this.parameterValueList2 = getParameterValueList2();
     this.parameterValueList3 = getParameterValueList3();
-    this.modeList = getModeList();
+    this.isOfficialList = getIsOfficialList();
     this.degList = getDegList();
     this.statusList = getStatusList();
   },
   methods: {
+    parameterListInt() {
+      getParameterList().then((response) => {
+        if (response.status === 200) {
+          for (var i = 0; i < response.data.length; i++) {
+            var ls = {
+              value: response.data[i].specificationsType,
+              label: response.data[i].name,
+            };
+            this.parameterList.push(ls);
+          }
+        } else {
+          this.$message.error("列表请求异常");
+        }
+      });
+    },
+    modeListInt() {
+      getModeList().then((response) => {
+        if (response.status === 200) {
+          for (var i = 0; i < response.data.length; i++) {
+            var ls = {
+              value: response.data[i].mark,
+              label: response.data[i].name,
+            };
+            this.modeList.push(ls);
+          }
+        } else {
+          this.$message.error("列表请求异常");
+        }
+      });
+    },
     typeListInt() {
       getMenuTypeList().then((response) => {
         if (response.status === 200) {
-          var ms = new Map();
           for (var i = 0; i < response.data.length; i++) {
             var ls = {
-              value: response.data[i].codeId,
+              value: response.data[i].mark,
               label: response.data[i].menuType,
             };
-            ms.set(response.data[i].codeId, response.data[i].menuType);
             this.menuTypeList.push(ls);
           }
-          this.mapMenuTypeList = ms;
         } else {
           this.$message.error("设备列表请求异常");
         }
@@ -304,9 +353,6 @@ export default {
             for (var i = 0; i < ls.fl.length; i++) {
               ls.fl[i].weight = parseFloat(ls.fl[i].weight);
             }
-          }
-          if (ls.deviceType) {
-            ls.deviceType = ls.deviceType.split(";");
           }
           this.formMenu = ls;
         } else {

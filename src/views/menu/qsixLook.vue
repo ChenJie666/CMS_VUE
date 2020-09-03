@@ -2,7 +2,7 @@
   <el-card class="box-card">
     <el-form ref="menuForm" :model="formMenu">
       <el-form-item label="菜谱名称:" label-width="200px" prop="name">{{formMenu.name}}</el-form-item>
-      <el-form-item label="菜谱分类:" label-width="200px" prop="menuType">{{formMenu.menuType}}</el-form-item>
+      <el-form-item label="菜谱分类:" label-width="200px" prop="menuType">{{formMenu.menuType  | listFilter(menuTypeList)}}</el-form-item>
       <el-form-item label="设备端位置:" label-width="200px" prop="location">{{formMenu.location}}</el-form-item>
       <el-form-item label="Q6设备图片:" label-width="200px">
         <div class="hxr-upGroup">
@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { arrToMap } from "../../utils/main";
 import { getMenuTypeList } from "../../api/dataList";
 import { getQsixDetailInfo } from "../../api/menus/qsixMenu";
 export default {
@@ -40,6 +41,16 @@ export default {
       },
       menuTypeList: [],
     };
+  },
+  filters: {
+    listFilter: function (value,list) {
+      var ls = value;
+      if (list) {
+        var lsmap = arrToMap(list, "value", "label");
+        ls = lsmap.get(value);
+      }
+      return ls;
+    },
   },
   created() {
     this.getMenuDetail();
@@ -62,7 +73,7 @@ export default {
         if (response.status === 200) {
           for (var i = 0; i < response.data.length; i++) {
             var ls = {
-              value: response.data[i].codeId,
+              value: response.data[i].mark,
               label: response.data[i].menuType,
             };
             this.menuTypeList.push(ls);
@@ -118,7 +129,6 @@ export default {
   line-height: 100px;
   text-align: center;
 }
-
 .avatar {
   width: 100px;
   height: 100px;

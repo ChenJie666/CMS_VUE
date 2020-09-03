@@ -33,12 +33,10 @@ export function getForKitchenElectricList() {
     return dt
 }
 export function getParameterList() {
-    var dt = [
-        { value: 1, label: "重量" },
-        { value: 2, label: "口感" },
-        { value: 3, label: "烘焙" },
-    ]
-    return dt
+    return request({
+        url: '/menu/findSpecificationList',
+        method: 'get',
+    })
 }
 export function getParameterValueList1() {
     var dt = [
@@ -83,25 +81,10 @@ export function getParameterValueList3() {
     return dt
 }
 export function getModeList() {
-    var dt = [
-        { value: 1, label: "经典蒸" },
-        { value: 2, label: "快速蒸" },
-        { value: 33, label: "立体热风" },
-        { value: 34, label: "底加热" },
-        { value: 35, label: "烧烤" },
-        { value: 36, label: "强烧烤" },
-        { value: 37, label: "热风烧烤" },
-        { value: 38, label: "上下加热" },
-        { value: 39, label: "热风烤" },
-        { value: 40, label: "蒸汽烤" },
-        { value: 65, label: "解冻" },
-        { value: 66, label: "发酵" },
-        { value: 67, label: "杀菌" },
-        { value: 68, label: "保温" },
-        { value: 69, label: "烘干" },
-        { value: 70, label: "除垢" },
-    ]
-    return dt
+    return request({
+        url: '/menu/findModeList',
+        method: 'get',
+    })
 }
 export function getDegList() {
     var dt = ["简单", "中等", "困难"]

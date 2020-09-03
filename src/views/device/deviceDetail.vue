@@ -35,7 +35,7 @@
   </el-card>
 </template>
 <script>
-import { addDeviceItem ,getDeviceDetailInfo ,postDeviceDetailInfo } from "../../api/device/deviceList";
+import { getDeviceDetailInfo ,postDeviceDetailInfo } from "../../api/device/deviceList";
 export default {
   data() {
     return {

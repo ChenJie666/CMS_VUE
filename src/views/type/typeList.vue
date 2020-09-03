@@ -28,7 +28,7 @@
               </el-image>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="状态" min-width="20">
+          <el-table-column align="center" label="更新状态" min-width="20">
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.publishStatus"
@@ -57,6 +57,7 @@
   </div>
 </template>
 <script>
+import { getTypeListInfo, delTypeItem, postTypeDetailInfo } from "../../api/type/typeList";
 export default {
   data() {
     return {
@@ -64,17 +65,18 @@ export default {
     };
   },
   created() {
-    this.deviceInt();
+    this.listInt();
   },
   methods: {
-    deviceInt() {
-      var url = "/api/menu/findWebMenuTypeList";
-      this.$axios.get(url).then((res) => {
-        if (res.status === 200) {
-          this.MenuDataList = res.data.data;
+    listInt() {
+      getTypeListInfo().then((response) => {
+        if (response.status === 200) {
+          this.MenuDataList = response.data;
         } else {
-          console.log("error submit!!");
-          return false;
+          this.$message({
+            type: "error",
+            message: response.data,
+          });
         }
       });
     },
@@ -86,37 +88,35 @@ export default {
     handleEdit(id) {
       this.$router.push({
         path: "/type/typeDetail",
-        query:{
-          id:id
-        }
+        query: {
+          id: id,
+        },
       });
     },
     delMenu(id) {
-      console.log(id);
-      var url = "/api/menu/deleteMenuType";
-      this.$axios.delete(url, { params: { codeTitleId: id } }).then((res) => {
-        console.log(res);
-        if (res.status === 200) {
-          this.deviceInt();
+      delTypeItem( { codeTitleId: id }).then((response) => {
+        if (response.status === 200) {
+          this.listInt();
         } else {
-          console.log("error submit!!");
-          return false;
+          this.$message({
+            type: "error",
+            message: response.data,
+          });
         }
       });
     },
     switchChange(v) {
-      var url = "/api/menu/updateMenuType";
-      let config = {
-        headers: { "Content-Type": "application/json;charset=UTF-8" },
-      };
-      var fm = JSON.stringify(v);
-      this.$axios.post(url, fm, config).then((res) => {
-        console.log(res);
-        if (res.status === 200) {
-        
+      postTypeDetailInfo(v).then((response) => {
+        if (response.status === 200) {
+            this.$message({
+            type: "success",
+            message: "更改成功",
+          });
         } else {
-          console.log("error submit!!");
-          return false;
+          this.$message({
+            type: "error",
+            message: response.data,
+          });
         }
       });
     },
