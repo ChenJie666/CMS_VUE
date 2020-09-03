@@ -47,6 +47,7 @@ const Weather =() => import('../views/application/Weather.vue');
 const Festival =() => import('../views/application/Festival.vue');
 const ShortMessage =() => import('../views/application/ShortMessage.vue');
 const Voice =() => import('../views/application/Voice.vue');
+const VersionInfo =() => import('../views/application/VersionInfo.vue');
 const DevicePush =() => import('../views/application/DevicePush.vue');
 
 Vue.use(Router);
@@ -106,8 +107,9 @@ const routes = [
             {path: '/application/festival',component: Festival},
             {path: '/application/shortmessage',component: ShortMessage},
             {path: '/application/voice',component: Voice},
+            {path: '/application/versionInfo',component: VersionInfo},
             {path: '/application/devicepush',component: DevicePush}
-            
+
         ]
     }
 ];
