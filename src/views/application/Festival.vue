@@ -8,7 +8,7 @@
         <div class="container">
             <!-- 添加记录 -->
             <el-button type="primary" @click="dialogFormVisible = true">添加节日播报记录</el-button>
-            <el-dialog title="getTitle" :visible.sync="dialogFormVisible" @close="resetObj">
+            <el-dialog :title="getTitle" :visible.sync="dialogFormVisible" @close="resetObj">
                 <el-form label-position="right" label-width="20px" :model="festivalBroadcast">
                     <el-form-item label="播报日期" label-width="100px">
                         <el-date-picker style="width: 128px"
@@ -324,7 +324,7 @@
         ,
         computed: {
             getTitle() {
-                if (this.shortMessageVO.id == null) {
+                if (this.festivalBroadcast.id == null) {
                     return "添加节日播报"
                 } else {
                     return "修改节日播报"
