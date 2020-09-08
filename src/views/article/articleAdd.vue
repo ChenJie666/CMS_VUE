@@ -35,7 +35,7 @@
             <div class="hxr-ugcBottom">
               <el-upload
                 class="avatar-uploader"
-                action="http://192.168.32.128/menu/uploadFile"
+                :action="upUrl()"
                 :show-file-list="false"
                 :on-success="function(res,file){return handleImgSuccess(res,file,'articleImg','')}"
                 :before-upload="beforeImgUpload"
@@ -112,7 +112,10 @@ export default {
   },
   created() {},
   methods: {
-        checkImg(s, t) {
+    upUrl() {
+      return this.baseUrl + "/menu/uploadFile";
+    },
+    checkImg(s, t) {
       var s = s / 1024 / 1024;
       if (s > 0.5) {
         this.$message.error("文件大小不能超过 500k!");

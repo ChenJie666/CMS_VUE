@@ -7,6 +7,7 @@ import  '@/assets/css/base.css'
 import store from "./store";
 import axios from 'axios'
 import MyBread from "./components/common/MyBread";
+import { bUrl } from "./utils/main"
 
 Vue.prototype.$axios=axios;
 
@@ -16,9 +17,12 @@ Vue.config.productionTip = false;
 
 Vue.component(MyBread.name,MyBread);
 
+Vue.prototype.baseUrl = bUrl()
+
 new Vue({
   render: h => h(App),
   router,
   store,
   axios,
 }).$mount('#app');
+

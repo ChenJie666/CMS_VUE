@@ -34,7 +34,7 @@
             <div class="hxr-ugcBottom">
               <el-upload
                 class="avatar-uploader"
-                action="http://192.168.32.128/menu/uploadFile"
+                :action="upUrl()"
                 :show-file-list="false"
                 :on-success="function(res,file){return handleImgSuccess(res,file,'headImg','banner')}"
                 :before-upload="beforeImgUpload"
@@ -50,7 +50,7 @@
             <div class="hxr-ugcBottom">
               <el-upload
                 class="avatar-uploader"
-                action="http://192.168.32.128/menu/uploadFile"
+                :action="upUrl()"
                 :show-file-list="false"
                 :on-success="function(res,file){return handleImgSuccess(res,file,'middleImg','banner')}"
                 :before-upload="beforeImgUpload"
@@ -66,7 +66,7 @@
             <div class="hxr-ugcBottom">
               <el-upload
                 class="avatar-uploader"
-                action="http://192.168.32.128/menu/uploadFile"
+                :action="upUrl()"
                 :show-file-list="false"
                 :on-success="function(res,file){return handleImgSuccess(res,file,'menuUrl','banner')}"
                 :before-upload="beforeImgUpload"
@@ -85,7 +85,7 @@
           <div class="hxr-uvLeft">
             <el-upload
               class="avatar-uploader"
-              action="http://192.168.32.128/menu/uploadFile"
+              :action="upUrl()"
               :show-file-list="false"
               :on-success="handleVideoSuccess"
               :before-upload="beforeVideoUpload"
@@ -177,7 +177,7 @@
           <div class="hxr-apLeft">
             <el-upload
               class="avatar-uploader"
-              action="http://192.168.32.128/menu/uploadFile"
+              :action="upUrl()"
               :show-file-list="false"
               :on-success="function(res,file){return handleImgSuccess(res,file,index,'food')}  "
               :before-upload="beforeImgUpload"
@@ -208,7 +208,7 @@
           <div class="hxr-apLeft">
             <el-upload
               class="avatar-uploader"
-              action="http://192.168.32.128/menu/uploadFile"
+              :action="upUrl()"
               :show-file-list="false"
               :on-success="function(res,file){return handleImgSuccess(res,file,index,'cook')}  "
               :before-upload="beforeImgUpload"
@@ -569,6 +569,9 @@ export default {
     this.statusList = getStatusList();
   },
   methods: {
+    upUrl() {
+      return this.baseUrl + "/menu/uploadFile";
+    },
     parameterListInt() {
       getParameterList().then((response) => {
         if (response.status === 200) {
@@ -785,7 +788,7 @@ export default {
         this.formMenu.menuParameterS[i].defaultChecked = 0;
       }
       item.defaultChecked = 1;
-      console.log(item.parameterEnum)
+      console.log(item.parameterEnum);
       this.formMenu.defaultParameter = item.parameterEnum;
     },
     addMenuForm() {
@@ -838,7 +841,7 @@ export default {
           }
           fm.nutritionalIngredient = JSON.stringify(fm.nutritionalIngredient);
           if (fm.headImg && fm.middleImg && fm.middleImg) {
-            console.log(fm)
+            console.log(fm);
             postMenuDetailInfo(fm).then((response) => {
               console.log(response);
               if (response.status === 200) {

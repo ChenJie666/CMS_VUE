@@ -34,7 +34,7 @@
             <div class="hxr-ugcBottom">
               <el-upload
                 class="avatar-uploader"
-                action="http://192.168.32.128/menu/uploadFile"
+                :action="upUrl()"
                 :show-file-list="false"
                 :on-success="function(res,file){return handleImgSuccess(res,file,'deviceUrl','Q6')}"
                 :before-upload="beforeImgUpload"
@@ -149,6 +149,9 @@ export default {
     this.getMenuDetail();
   },
   methods: {
+    upUrl() {
+      return this.baseUrl + "/menu/uploadFile";
+    },
     typeListInt() {
       getMenuTypeList().then((response) => {
         if (response.status === 200) {

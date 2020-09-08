@@ -420,7 +420,7 @@ export default {
         for (var i = 0; i < this.$refs.multipleTable.selection.length; i++) {
           dataModule.menuIds.push(this.$refs.multipleTable.selection[i].id);
         }
-        getExcelStream(dataModule);
+        getExcelStream(this.baseUrl,dataModule);
       } else {
         this.$message.error("至少选中一条数据");
       }

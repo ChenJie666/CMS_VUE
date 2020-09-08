@@ -5,3 +5,6 @@ export function arrToMap(arr, k, v) {
     }
     return ms
 }
+export function bUrl() {
+    return "http://121.41.68.248:8002"
+}
