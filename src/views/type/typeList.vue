@@ -14,6 +14,7 @@
           <el-table-column label="顺序" type="index"></el-table-column>
           <el-table-column align="center" label="id" min-width="10" prop="codeId"></el-table-column>
           <el-table-column align="center" label="菜品类型" min-width="20" prop="menuType"></el-table-column>
+          <el-table-column align="center" label="标志位" min-width="20" prop="mark"></el-table-column>
           <el-table-column align="center" label="位置" min-width="20" prop="sort"></el-table-column>
           <el-table-column align="center" label="菜品图片" min-width="20" prop="imgUrl">
             <template slot-scope="scope">

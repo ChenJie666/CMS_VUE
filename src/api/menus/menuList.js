@@ -36,8 +36,9 @@ export function delCompleteMenuList(params) {
         method: 'delete',
     })
 }
-export function getExcelStream(s) {
-    var url = "http://192.168.32.128/menu/exportMenuDetailList?" + qs.stringify(s, { indices: false });
+export function getExcelStream(b,s) {
+    var url = b+"/menu/exportMenuDetailList?" + qs.stringify(s, { indices: false });
+    console.log(url)
     const link = document.createElement("a");
     link.href = url;
     link.click();

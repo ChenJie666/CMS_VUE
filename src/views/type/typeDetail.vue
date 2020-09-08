@@ -14,7 +14,7 @@
         <div class="hxr-typeUp">
           <el-upload
             class="avatar-uploader"
-            action="http://192.168.32.128/menu/uploadFile"
+            :action="upUrl()"
             :show-file-list="false"
             :on-success="function(res,file){return handleImgSuccess(res,file,'imgUrl','typeup')}"
             :before-upload="beforeImgUpload"
@@ -63,6 +63,9 @@ export default {
     this.detailInt();
   },
   methods: {
+        upUrl(){
+      return this.baseUrl+"/menu/uploadFile"
+    },
     detailInt() {
       getTypeDetailInfo({ codeId: this.$route.query.id }).then((response) => {
         if (response.status === 200) {
