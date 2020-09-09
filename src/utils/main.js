@@ -6,5 +6,8 @@ export function arrToMap(arr, k, v) {
     return ms
 }
 export function bUrl() {
-    return "http://121.41.68.248:8002"
+    //var ls = "http://121.41.68.248:8002"
+    //var ls = "http://192.168.32.128"
+    var ls = "/api"
+    return ls
 }

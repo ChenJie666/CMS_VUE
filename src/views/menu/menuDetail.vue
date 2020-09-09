@@ -192,7 +192,9 @@
               <el-input v-model="item.name" placeholder="请输入食材名称" style="width:220px"></el-input>
             </div>
             <div class="hxr-aprBottom">
-              <el-input v-model="item.weight" placeholder="请输入食材重量" style="width:220px">
+              <el-input v-model.number="item.weight"
+              oninput="if(value.length>9)value=value.slice(0,9)"
+              type="number" placeholder="请输入食材重量" style="width:220px">
                 <template slot="append">克</template>
               </el-input>
             </div>
@@ -251,7 +253,7 @@
       <el-form-item label-width="200px">
         <div v-if="formMenu.deviceType.length>0">
           <div class="hxr-addExpend">
-            <el-select v-model="formMenu.specificationsType" placeholder="请选规格">
+            <el-select v-model="formMenu.specificationsType" placeholder="请选规格" @change="specificationsChange">
               <el-option
                 v-for="x in parameterList"
                 :key="x.value"
@@ -264,30 +266,10 @@
             <div class="hxr-awHead">
               <div class="hxr-awhLeft">规格设置</div>
               <div class="hxr-awhCenter">
-                <div class="hxr-awhcCell" v-if="formMenu.specificationsType==1">
-                  <el-select v-model="item.parameterEnum" placeholder="请选择重量">
+                <div class="hxr-awhcCell">
+                  <el-select v-model="item.parameterEnum" placeholder="请选择规格参数" >
                     <el-option
-                      v-for="x in parameterValueList1"
-                      :key="x.value"
-                      :label="x.label"
-                      :value="x.value"
-                    ></el-option>
-                  </el-select>
-                </div>
-                <div class="hxr-awhcCell" v-if="formMenu.specificationsType==2">
-                  <el-select v-model="item.parameterEnum" placeholder="请选择口感">
-                    <el-option
-                      v-for="x in parameterValueList2"
-                      :key="x.value"
-                      :label="x.label"
-                      :value="x.value"
-                    ></el-option>
-                  </el-select>
-                </div>
-                <div class="hxr-awhcCell" v-if="formMenu.specificationsType==3">
-                  <el-select v-model="item.parameterEnum" placeholder="烘焙">
-                    <el-option
-                      v-for="x in parameterValueList3"
+                      v-for="x in parameterValueList"
                       :key="x.value"
                       :label="x.label"
                       :value="x.value"
@@ -452,9 +434,7 @@ import {
   getNutritionalList,
   getForKitchenElectricList,
   getParameterList,
-  getParameterValueList1,
-  getParameterValueList2,
-  getParameterValueList3,
+  getParameterValueList,
   getModeList,
   getDegList,
   getStatusList,
@@ -541,9 +521,7 @@ export default {
       nutritionalList: [],
       forKitchenElectricList: [],
       parameterList: [],
-      parameterValueList1: [],
-      parameterValueList2: [],
-      parameterValueList3: [],
+      parameterValueList: [],
       modeList: [],
       degList: [],
       statusList: [],
@@ -559,12 +537,8 @@ export default {
     this.deviceInt();
     this.getMenuDetail();
     this.modeListInt();
-    this.parameterListInt();
     this.nutritionalList = getNutritionalList();
     this.forKitchenElectricList = getForKitchenElectricList();
-    this.parameterValueList1 = getParameterValueList1();
-    this.parameterValueList2 = getParameterValueList2();
-    this.parameterValueList3 = getParameterValueList3();
     this.degList = getDegList();
     this.statusList = getStatusList();
   },
@@ -573,12 +547,35 @@ export default {
       return this.baseUrl + "/menu/uploadFile";
     },
     parameterListInt() {
+      var that = this;
       getParameterList().then((response) => {
+        console.log(response);
         if (response.status === 200) {
+          function lsf(stid, num) {
+            getParameterValueList({
+              specificationsType: stid,
+            }).then((response) => {
+              var lls = [];
+              for (var i = 0; i < response.data.length; i++) {
+                var llscell = {
+                  value: response.data[i].parameterEnum,
+                  label: response.data[i].parameter,
+                };
+                lls.push(llscell);
+              }
+              that.parameterList[num].children = lls;
+              if (that.formMenu.specificationsType == stid) {
+                that.parameterValueList = lls;
+                console.log(that.parameterValueList);
+              }
+            });
+          }
           for (var i = 0; i < response.data.length; i++) {
+            lsf(response.data[i].specificationsType, i);
             var ls = {
               value: response.data[i].specificationsType,
               label: response.data[i].name,
+              children: [],
             };
             this.parameterList.push(ls);
           }
@@ -590,6 +587,7 @@ export default {
     modeListInt() {
       getModeList().then((response) => {
         if (response.status === 200) {
+          console.log(response);
           for (var i = 0; i < response.data.length; i++) {
             var ls = {
               value: response.data[i].mark,
@@ -661,6 +659,7 @@ export default {
             ls.deviceType = ls.deviceType.split(";");
           }
           this.formMenu = ls;
+          this.parameterListInt();
         } else {
           this.$message.error("菜谱详情请求异常");
         }
@@ -731,7 +730,7 @@ export default {
         ],
         parameter: "",
         parameterEnum: 1,
-        defaultChecked: false,
+        defaultChecked: 0,
       });
     },
     delWellRow(item, index) {
@@ -791,7 +790,20 @@ export default {
       console.log(item.parameterEnum);
       this.formMenu.defaultParameter = item.parameterEnum;
     },
+    specificationsChange(value){
+      for (var i=0 ; i<this.parameterList.length ; i++){
+        console.log(this.parameterList[i].value)
+        if (value == this.parameterList[i].value){
+          this.parameterValueList = this.parameterList[i].children
+        }
+      }
+      for (var i=0 ; i<this.formMenu.menuParameterS.length ; i++){
+        this.formMenu.menuParameterS[i].parameter = ""
+        this.formMenu.menuParameterS[i].parameterEnum = 1
+      }
+    },
     addMenuForm() {
+      var that = this
       this.$refs.menuForm.validate((valid) => {
         if (valid) {
           var fm = JSON.parse(JSON.stringify(this.formMenu));
@@ -824,7 +836,11 @@ export default {
           if (fm.menuParameterS.length > 0) {
             var lscs = 0;
             for (var i = 0; i < fm.menuParameterS.length; i++) {
-              console.log(fm.menuParameterS[i].defaultChecked);
+              for (var j =0 ; j<that.parameterValueList.length; j++){
+                if (fm.menuParameterS[i].parameterEnum == that.parameterValueList[j].value){
+                  fm.menuParameterS[i].parameter = that.parameterValueList[j].label
+                }
+              }
               if (fm.menuParameterS[i].defaultChecked == 1) {
                 lscs = 1;
               }

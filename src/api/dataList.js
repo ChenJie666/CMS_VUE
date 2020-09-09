@@ -38,6 +38,13 @@ export function getParameterList() {
         method: 'get',
     })
 }
+export function getParameterValueList(params) {
+    return request({
+        url: '/menu/findArgumentsList',
+        method: 'get',
+        params: params
+    })
+}
 export function getParameterValueList1() {
     var dt = [
         { value: 1, label: "100" },
