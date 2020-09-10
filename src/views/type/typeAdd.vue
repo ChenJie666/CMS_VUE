@@ -7,7 +7,7 @@
           show-word-limit
           clearable
           v-model="formMenu.menuType"
-          placeholder="请输入设备类型"
+          placeholder="请输入菜品类型"
         ></el-input>
       </el-form-item>
       <el-form-item label="菜品类型图片:" label-width="200px" prop="imgUrl">

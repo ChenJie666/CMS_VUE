@@ -4,7 +4,7 @@
     <el-row class="hxr-RowChange" :gutter="20">
       <el-col :span="24" class="hxr-btnGroup">
         <div class="hxr-bgCell">
-          <el-button @click="addMenu()" size="small" type="success">添加类型</el-button>
+          <el-button @click="addMenu()" size="small" type="success">添加菜品类型</el-button>
         </div>
       </el-col>
     </el-row>

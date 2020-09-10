@@ -70,10 +70,6 @@
       </el-form-item>
       <el-form-item label="食材清单：" label-width="200px">
         <div class="hxr-addPan" v-for="(item,index) in formMenu.fl" :key="index">
-          <div class="hxr-apLeft">
-            <img v-if="item.img" :src="item.img" class="cpfood" />
-            <i v-else class="el-icon-plus cpfood-uploader-icon"></i>
-          </div>
           <div class="hxr-apRight">
             <div class="hxr-aprTop">{{item.name}}</div>
             <div class="hxr-aprBottom">{{item.weight}}克</div>
@@ -103,16 +99,7 @@
               <div class="hxr-awhCenter">
                 <div
                   class="hxr-awhcCell"
-                  v-if="formMenu.specificationsType==1"
-                >{{item.parameterEnum | listFilter(parameterValueList1)}}克</div>
-                <div
-                  class="hxr-awhcCell"
-                  v-if="formMenu.specificationsType==2"
-                >{{item.parameterEnum | listFilter(parameterValueList2)}}</div>
-                <div
-                  class="hxr-awhcCell"
-                  v-if="formMenu.specificationsType==3"
-                >{{item.parameterEnum | listFilter(parameterValueList3)}}</div>
+                >{{item.parameterEnum | listFilter(parameterValueList)}}克</div>
               </div>
               <div class="hxr-awhRight">{{item.defaultChecked==1?"已设为默认":"非默认"}}</div>
             </div>
@@ -185,6 +172,7 @@ import {
   getNutritionalList,
   getForKitchenElectricList,
   getParameterList,
+  getParameterValueList,
   getParameterValueList1,
   getParameterValueList2,
   getParameterValueList3,
@@ -232,9 +220,7 @@ export default {
       nutritionalList: [],
       forKitchenElectricList: [],
       parameterList: [],
-      parameterValueList1: [],
-      parameterValueList2: [],
-      parameterValueList3: [],
+      parameterValueList: [],
       modeList: [],
       degList: [],
       statusList: [],
@@ -264,21 +250,41 @@ export default {
     this.parameterListInt();
     this.nutritionalList = getNutritionalList();
     this.forKitchenElectricList = getForKitchenElectricList();
-    this.parameterValueList1 = getParameterValueList1();
-    this.parameterValueList2 = getParameterValueList2();
-    this.parameterValueList3 = getParameterValueList3();
     this.isOfficialList = getIsOfficialList();
     this.degList = getDegList();
     this.statusList = getStatusList();
   },
   methods: {
     parameterListInt() {
+      var that = this;
       getParameterList().then((response) => {
+        console.log(response);
         if (response.status === 200) {
+          function lsf(stid, num) {
+            getParameterValueList({
+              specificationsType: stid,
+            }).then((response) => {
+              var lls = [];
+              for (var i = 0; i < response.data.length; i++) {
+                var llscell = {
+                  value: response.data[i].parameterEnum,
+                  label: response.data[i].parameter,
+                };
+                lls.push(llscell);
+              }
+              that.parameterList[num].children = lls;
+              if (that.formMenu.specificationsType == stid) {
+                that.parameterValueList = lls;
+                console.log(that.parameterValueList);
+              }
+            });
+          }
           for (var i = 0; i < response.data.length; i++) {
+            lsf(response.data[i].specificationsType, i);
             var ls = {
               value: response.data[i].specificationsType,
               label: response.data[i].name,
+              children: [],
             };
             this.parameterList.push(ls);
           }
@@ -350,11 +356,9 @@ export default {
           }
           if (ls.fl) {
             ls.fl = JSON.parse(ls.fl);
-            for (var i = 0; i < ls.fl.length; i++) {
-              ls.fl[i].weight = parseFloat(ls.fl[i].weight);
-            }
           }
           this.formMenu = ls;
+          this.parameterListInt();
         } else {
           this.$message.error("菜谱详情请求异常");
         }

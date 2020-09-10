@@ -174,6 +174,7 @@
       </el-form-item>
       <el-form-item label="食材清单：" label-width="200px" prop="fl">
         <div class="hxr-addPan" v-for="(item,index) in formMenu.fl" :key="index">
+          <!--
           <div class="hxr-apLeft">
             <el-upload
               class="avatar-uploader"
@@ -187,15 +188,17 @@
               <i v-else class="el-icon-plus cpfood-uploader-icon"></i>
             </el-upload>
           </div>
+          -->
           <div class="hxr-apRight">
             <div class="hxr-aprTop">
               <el-input v-model="item.name" placeholder="请输入食材名称" style="width:220px"></el-input>
             </div>
             <div class="hxr-aprBottom">
-              <el-input v-model.number="item.weight"
-              oninput="if(value.length>9)value=value.slice(0,9)"
-              type="number" placeholder="请输入食材重量" style="width:220px">
-                <template slot="append">克</template>
+              <el-input v-model="item.weight"
+               placeholder="请输入食材重量" style="width:220px">
+                <!--
+<template slot="append">克</template>
+                -->
               </el-input>
             </div>
           </div>
@@ -470,9 +473,6 @@ export default {
         description: [
           { required: true, message: "请输入菜谱介绍", trigger: "blur" },
         ],
-        nutritionalIngredient: [
-          { required: true, message: "请添加营养成分", trigger: "blur" },
-        ],
         fl: [{ required: true, message: "请添加食材清单", trigger: "blur" }],
         cookSteps: [
           { required: true, message: "请添加烹饪步骤", trigger: "blur" },
@@ -651,9 +651,6 @@ export default {
           }
           if (ls.fl) {
             ls.fl = JSON.parse(ls.fl);
-            for (var i = 0; i < ls.fl.length; i++) {
-              ls.fl[i].weight = parseFloat(ls.fl[i].weight);
-            }
           }
           if (ls.deviceType) {
             ls.deviceType = ls.deviceType.split(";");
@@ -823,12 +820,6 @@ export default {
                 fm.nutritionalIngredient[i].weight +
                 this.nutritionalList[fm.nutritionalIngredient[i].value - 1].end;
               fm.nutritionalIngredient[i].weight = ls1;
-            }
-          }
-          if (fm.fl.length > 0) {
-            for (var i = 0; i < fm.fl.length; i++) {
-              var ls1 = fm.fl[i].weight + "克";
-              fm.fl[i].weight = ls1;
             }
           }
           fm.fl = JSON.stringify(fm.fl);
