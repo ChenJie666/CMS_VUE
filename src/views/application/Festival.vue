@@ -140,7 +140,7 @@
 
 </template>
 
-<style src="../../assets/css/application/application.css"/>
+<style scoped src="../../assets/css/application/application.css"/>
 
 <script>
     import festival from '../../api/application/festival'

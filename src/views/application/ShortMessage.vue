@@ -1,5 +1,5 @@
 <template>
-    <div class="FestivalList">
+    <div class="">
         <el-breadcrumb separator="/">
             <el-breadcrumb-item><i class="el-icon-cloudy"/> 应用云</el-breadcrumb-item>
             <el-breadcrumb-item><i class="el-icon-printer"/> 短消息列表</el-breadcrumb-item>
