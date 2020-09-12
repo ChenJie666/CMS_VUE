@@ -163,6 +163,10 @@
               <i class="el-icon-phone-outline" />
               <span>语音包列表</span>
             </el-menu-item>
+            <el-menu-item index="/application/versionInfo">
+              <i class="el-icon-document" />
+              <span>版本信息列表</span>
+            </el-menu-item>
             <el-menu-item index="/application/devicepush">
               <i class="el-icon-s-promotion" />
               <span>物模型推送</span>
