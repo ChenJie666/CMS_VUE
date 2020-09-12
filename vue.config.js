@@ -44,5 +44,5 @@ module.exports = {
         }
     },
     // 打包静态文件
-    publicPath: process.env.NODE_ENV === 'production' ? '/' : './'
+    publicPath: process.env.NODE_ENV === 'production' ? './' : '/'
 };
